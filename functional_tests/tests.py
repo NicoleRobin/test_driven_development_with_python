@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-import unittest
+from django.test import LiveServerTestCase
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
 
     def setUp(self) -> None:
         # self.browser = webdriver.Firefox()
@@ -20,7 +19,7 @@ class NewVisitorTest(unittest.TestCase):
     def test_can_start_a_list_and_retrieve_it_later(self):
         # 伊丽丝听说有一个很酷的在线待办事项应用
         # 她去看了这个应用的首页
-        self.browser.get('http://localhost:8000')
+        self.browser.get(self.live_server_url)
 
         # 她注意到网页的标题和头部都包含'To-Do'这个词
         self.assertIn('To-Do', self.browser.title)
@@ -63,7 +62,3 @@ class NewVisitorTest(unittest.TestCase):
         )
 
         self.fail('Finish the test!')
-
-
-if __name__ == '__main__':
-    unittest.main(warnings='ignore')
