@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 
 from django.test import LiveServerTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 
 
-class NewVisitorTest(LiveServerTestCase):
+class NewVisitorTest(StaticLiveServerTestCase):
 
     def setUp(self) -> None:
         # self.browser = webdriver.Firefox()
@@ -47,7 +48,7 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys(Keys.ENTER)
         edith_list_url = self.browser.current_url
         self.assertRegex(edith_list_url, '/lists/.+')
-        self.check_for_row_in_list_table('1：Buy peacock feathers')
+        self.check_for_row_in_list_table('1: Buy peacock feathers')
 
         # 页面中又显示了一个文本框，可以输入其他的待办事项
         # 她输入了'Use peacock feathers to make a fly'（使用孔雀羽毛做假蝇）
@@ -59,8 +60,8 @@ class NewVisitorTest(LiveServerTestCase):
         # 伊迪斯想知道这个网站是否会记住它的清单
 
         # 页面再次更新，她的清单中显示了这两个待办事项
-        self.check_for_row_in_list_table('2：Use peacock feathers to make a fly')
-        self.check_for_row_in_list_table('1：Buy peacock feathers')
+        self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
+        self.check_for_row_in_list_table('1: Buy peacock feathers')
 
         # 现在一个叫弗朗西斯的新用户访问了网站
 
@@ -94,3 +95,26 @@ class NewVisitorTest(LiveServerTestCase):
 
         # 两个人都很满意，去睡觉了
 
+    def test_layout_and_styling(self):
+        # 依迪丝访问首页
+        self.browser.get(self.live_server_url)
+        self.browser.set_window_size(1024, 768)
+
+        # 她看到输入框完美地居中显示
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        # print(inputbox.location)
+        # print(inputbox.size)
+        self.assertAlmostEqual(
+            inputbox.location['x'] + inputbox.size['width'] / 2,
+            512,
+            delta=5,
+        )
+
+        # 她新建一个清单，看到输入框仍完美的居中显示
+        inputbox.send_keys('testing\n')
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + inputbox.size['width'] / 2,
+            512,
+            delta=5,
+        )
